@@ -25,6 +25,10 @@ namespace aer
 	{
 	}
 
+	Object::~Object()
+	{
+	}
+
 	void Object::set(int tag_id, const Any& any)
 	{
 		m_implementation->set(tag_id, any);

@@ -4,12 +4,6 @@
 #include <string.h>
 #include <stdexcept>
 
-#define likely(x) x
-
-/**
- * This code is based on 
- */
-
 namespace aer
 {
 	namespace impl
@@ -67,7 +61,7 @@ namespace aer
 		template <typename T>
 		T& as() const
 		{
-			if (likely(sameType<T>()))
+			if (sameType<T>())
 			{
 				return *(reinterpret_cast<T*>(storage));
 			} 

@@ -5,6 +5,7 @@
 #include <aer/base/type.hpp>
 #include <aer/base/context.hpp>
 #include <aer/util/any.hpp>
+#include <aer/util/implementation_ptr.hpp>
 
 #include <type_traits>
 #include <unordered_map>
@@ -16,6 +17,7 @@ namespace aer
 	{
 	public:
 		Object();
+		~Object();
 
 		template <typename T>
 		inline void set(const Tag<T>& tag, const T& value)
@@ -62,7 +64,7 @@ namespace aer
 		struct ObjectImplementation;
 	private:
 		Context* m_context;
-		ObjectImplementation* m_implementation;
+		implementation_ptr<ObjectImplementation> m_implementation;
 	};
 }
 

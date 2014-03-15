@@ -1,6 +1,11 @@
 #ifndef AER_DYNAMIC_LIBRARY_H_
 #define AER_DYNAMIC_LIBRARY_H_
 
+#include <aer/dynamic/manifest.hpp>
+
+#include <string>
+#include <dlfcn.h>
+
 namespace aer
 {
 	class LibraryHandle
@@ -17,31 +22,18 @@ namespace aer
 				dlclose(handle);
 			}
 		}
-		template <typename R, typename T>
-		Symbol<R (const T&)> symbol(const std::string& name) const
-		{
-			dlsym(handle, name);
-		}
 	private:
 		void* handle;
-	}
+	};
 
 	class Library
 	{
-	private:
-		Library(const Library& other);
-		Library(Library&& other);
-		Library& operator=(const Library& other);
-
-	public:
-		Library(const std::string& filename) : m_handle(new LibraryHandle(filename))
-		{
-		}
-		~Library()
-		{
-		}
-	private:
-		shared_ptr<LibraryHandle> m_handle;
+		public:
+			Library(const std::string& filename);
+			~Library();
+			Manifest manifest() const;
+		private:
+			std::shared_ptr<LibraryHandle> m_handle;
 	};
 }
 

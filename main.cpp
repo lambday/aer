@@ -1,33 +1,19 @@
-#include <aer/base/object.hpp>
+#include <aer/aer.hpp>
 #include <iostream>
 
-
-void libraries()
+class MyBaseClass : public aer::Object
 {
-/*
-	DynamicLibrary dl("./libtest_plugin.so");
-	if (!dl.ready())
-	{
-		printf("Error: %s", dlerror());
-	}
-	Symbol symbol = dl.symbol("create");
-	if (!symbol.ready())
-	{
-		printf("Error: %s", dlerror());
-	}
-	else
-	{
-		symbol.unsafeCall();
-	}
-*/
-}
+};
+
+static aer::Tag<int> int_parameter;
 
 int main()
 {
-	aer::Tag<float> float_tag;
-	aer::Tag<int> int_tag;
-	aer::Object object;
-	object.set(int_tag, 3);
-	object.set(float_tag, 4.0f);
-	std::cout << "Value is " << object.get(int_tag);
+	auto library = aer::Library("mylibrary.so");
+	auto manifest = library.manifest();
+	auto metaclass = manifest.metaclass<MyBaseClass>("basic"); 
+	auto object = metaclass.instance();
+
+	object->set(int_parameter, 4040);
+	std::cout << "Value is " << object->get(int_parameter);
 }

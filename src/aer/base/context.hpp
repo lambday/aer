@@ -2,10 +2,10 @@
 #define AER_BASE_CONTEXT_H_
 
 #include <aer/util/any.hpp>
+#include <aer/util/implementation_ptr.hpp>
 #include <aer/base/tag.hpp>
 
 #include <string>
-#include <unordered_map>
 
 namespace aer
 {
@@ -23,7 +23,7 @@ namespace aer
 
 		struct ContextImplementation;
 	private:
-		ContextImplementation* m_implementation;
+		implementation_ptr<ContextImplementation> m_implementation;
 	};
 }
 
