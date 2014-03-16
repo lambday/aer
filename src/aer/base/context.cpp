@@ -7,9 +7,18 @@ namespace aer
 	/** @brief
 	 *
 	 */
-	struct Context::ContextImplementation
+	struct Context::Private
 	{
 		std::unordered_map<std::string, Any> m_tags;
 	};
+
+	Context::Context()
+	{
+	}
+
+	Context::~Context()
+	{
+	}
+
 }
 

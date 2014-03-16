@@ -2,31 +2,35 @@
 #define AER_DYNAMIC_METACLASS_H_
 
 #include <aer/base/object.hpp>
-#include <aer/util/implementation_ptr.hpp>
-#include <aer/util/ptr.hpp>
+#include <aer/util/d_ptr.hpp>
+#include <aer/util/as.hpp>
 
 #include <memory>
 
 namespace aer
 {
 
+	class Manifest;
+
 	template <typename T>
 	class Metaclass
 	{
 		public:
-			Metaclass()
+			Metaclass(As<Manifest> manifest) : m_manifest(manifest)
 			{
 			}
-			Metaclass(const Metaclass<T>& other)
+			Metaclass(const Metaclass<T>& other) : m_manifest(other.m_manifest)
 			{
 			}
 			~Metaclass()
 			{
 			}
-			ptr<T> instance() const
+			As<T> instance() const
 			{
-				return ptr<T>(new T());
+				return As<T>(new T());
 			}
+		private:
+			As<Manifest> m_manifest;
 	};
 
 }

@@ -5,7 +5,8 @@
 #include <aer/base/type.hpp>
 #include <aer/base/context.hpp>
 #include <aer/util/any.hpp>
-#include <aer/util/implementation_ptr.hpp>
+#include <aer/util/d_ptr.hpp>
+#include <aer/util/as.hpp>
 
 #include <type_traits>
 #include <unordered_map>
@@ -13,7 +14,7 @@
 namespace aer
 {
 
-	class Object
+	class Object : public EnableSelf<Object>
 	{
 	public:
 		Object();
@@ -61,10 +62,10 @@ namespace aer
 		Any get(int tag_id) const;
 
 	protected:
-		struct ObjectImplementation;
 	private:
-		Context* m_context;
-		implementation_ptr<ObjectImplementation> m_implementation;
+		As<Context> m_context;
+		struct Private;
+		DPtr<Private> m_implementation;
 	};
 }
 

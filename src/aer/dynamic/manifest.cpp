@@ -3,16 +3,18 @@
 namespace aer
 {
 
-	struct Manifest::ManifestImplementation
+	struct Manifest::Private
 	{
 
 	};
 
-	Manifest::Manifest() : m_implementation(new ManifestImplementation)
+	Manifest::Manifest() : 
+		m_implementation()
 	{
 	}
 
-	Manifest::Manifest(const Manifest& other) : m_implementation(new ManifestImplementation)
+	Manifest::Manifest(const Manifest& other) : 
+		m_implementation()
 	{
 	}
 

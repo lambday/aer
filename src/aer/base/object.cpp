@@ -8,7 +8,7 @@ namespace aer
 	/** @brief
 	 *
 	 */
-	struct Object::ObjectImplementation
+	struct Object::Private
 	{
 		void set(int tag_id, const Any& any)
 		{
@@ -21,7 +21,7 @@ namespace aer
 		std::unordered_map<int, Any> map;
 	};
 
-	Object::Object() : m_implementation(new Object::ObjectImplementation)
+	Object::Object() : m_context(new Context()), m_implementation()
 	{
 	}
 

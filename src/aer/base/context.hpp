@@ -2,16 +2,19 @@
 #define AER_BASE_CONTEXT_H_
 
 #include <aer/util/any.hpp>
-#include <aer/util/implementation_ptr.hpp>
+#include <aer/util/d_ptr.hpp>
+#include <aer/util/as.hpp>
 #include <aer/base/tag.hpp>
 
 #include <string>
 
 namespace aer
 {
-	class Context
+	class Context : public EnableSelf<Context>
 	{
 	public:
+		Context();
+		~Context();
 		template <typename T>
 		inline Tag<T> tag_for(const std::string& name)
 		{
@@ -21,9 +24,9 @@ namespace aer
 	protected:
 		Any anytag(const std::string& name) const;
 
-		struct ContextImplementation;
 	private:
-		implementation_ptr<ContextImplementation> m_implementation;
+		struct Private;
+		DPtr<Private> m_implementation;
 	};
 }
 

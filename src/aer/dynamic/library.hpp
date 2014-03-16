@@ -5,36 +5,25 @@
 
 #include <string>
 #include <dlfcn.h>
+#include <iostream>
 
 namespace aer
 {
-	class LibraryHandle
-	{
-	public:
-		LibraryHandle(const std::string& filename)
-		{
-			handle = dlopen(filename.c_str(), RTLD_LAZY);
-		}
-		~LibraryHandle()
-		{
-			if (handle)
-			{
-				dlclose(handle);
-			}
-		}
-	private:
-		void* handle;
-	};
+
+	class LibraryHandle;
 
 	class Library
 	{
 		public:
 			Library(const std::string& filename);
 			~Library();
-			Manifest manifest() const;
+			As<Manifest> manifest();
 		private:
 			std::shared_ptr<LibraryHandle> m_handle;
 	};
+
+	As<Library> loadLibrary(const std::string& filename);
+
 }
 
 #endif

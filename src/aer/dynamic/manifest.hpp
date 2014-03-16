@@ -3,26 +3,28 @@
 
 #include <aer/dynamic/metaclass.hpp>
 
-#include <aer/util/implementation_ptr.hpp>
+#include <aer/util/d_ptr.hpp>
 
 namespace aer
 {
 
-	class Manifest 
+	class Library;
+
+	class Manifest : public EnableSelf<Manifest>
 	{
 		public:
 			Manifest();
 			Manifest(const Manifest& other);
 			~Manifest();
 			template <typename T>
-			Metaclass<T> metaclass(const std::string& name)
+			As<Metaclass<T>> metaclass(const std::string& name)
 			{
-				return Metaclass<T>();
+				Metaclass<T>* metaclass = nullptr;
+				return As<Metaclass<T>>(metaclass);
 			}
-		protected:
-			struct ManifestImplementation;
 		private:
-			implementation_ptr<ManifestImplementation> m_implementation;
+			struct Private;
+			DPtr<Private> m_implementation;
 	};
 
 }
