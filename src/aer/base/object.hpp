@@ -14,36 +14,37 @@
 namespace aer
 {
 
-	class Object : public EnableSelf<Object>
+	class Object
 	{
 	public:
 		Object();
+		Object(const Object& other);
 		~Object();
 
 		template <typename T>
 		inline void set(const Tag<T>& tag, const T& value)
 		{
-			set(tag.id(), Any(value));
+			set(tag.id(), erase_type(value));
 		}
 
 		template <typename T>
 		inline T get(const Tag<T>& tag) const
 		{
 			const Any value = get(tag.id());
-			return value.as<T>();
+			return recall_type<T>(value);
 		}
 
 		template <typename T>
 		inline void set(const std::string& name, const T& value)
 		{
-			set(tag<T>(name).id(), Any(value));
+			set(tag<T>(name).id(), erase_type(value));
 		}
 
 		template <typename T>
 		inline T get(const std::string& name, const Type<T>& type) const
 		{
 			const Any value = get(tag<T>(name).id());
-			return value.as<T>();
+			return recall_type<T>(value);
 		}
 	
 	protected:
@@ -55,7 +56,7 @@ namespace aer
 		template<typename T>
 		inline Tag<T> tag(const std::string& name) const
 		{
-			return m_context->tag_for<T>(name);
+		//	return m_context->tag_for<T>(name);
 		}
 
 		void set(int tag_id, const Any& any);
@@ -63,9 +64,8 @@ namespace aer
 
 	protected:
 	private:
-		As<Context> m_context;
-		struct Private;
-		DPtr<Private> m_implementation;
+		class Self;
+		DPtr<Self> self;
 	};
 }
 

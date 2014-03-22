@@ -3,18 +3,34 @@
 
 #include <string.h>
 #include <stdexcept>
+#include <typeinfo>
+#include <cxxabi.h>
+#include <iostream>
 
 namespace aer
 {
 	namespace impl
 	{
+		template <typename T>
+		std::string demangledTypeName()
+		{
+			size_t length;
+			int status;
+			char* demangled = abi::__cxa_demangle(typeid(T).name(), nullptr, &length, &status);
+			std::string demangled_string(demangled);
+			free(demangled);
+			return demangled_string;
+		}
+
 		class BaseAnyPolicy
 		{
 			public:
 				virtual void set(void** storage, const void* v) const = 0;
 				virtual void clear(void** storage) const = 0;
+				virtual std::string valueTypename() const = 0;
+				virtual bool sameTypeInfo(const std::type_info& ) const = 0;
 		};
-
+		
 		template <typename T>
 		class PointerValueAnyPolicy : public BaseAnyPolicy
 		{
@@ -27,6 +43,14 @@ namespace aer
 				{
 					delete reinterpret_cast<T*>(*storage);
 				}
+				virtual std::string valueTypename() const
+				{
+					return impl::demangledTypeName<T>();
+				}
+				virtual bool sameTypeInfo(const std::type_info& ti) const
+				{
+					return typeid(T) == ti;
+				}
 		};
 	}
 
@@ -37,6 +61,7 @@ namespace aer
 
 		Any() : policy(selectPolicy<Empty>()), storage(nullptr)
 		{
+			//std::cout << "Creating empty";
 		}
 		template <typename T>
 		explicit Any(const T& v) : policy(selectPolicy<T>()), storage(nullptr)
@@ -50,6 +75,7 @@ namespace aer
 		Any& operator=(const Any& other)
 		{
 			//assert(policy == other.policy); 
+			policy->clear(&storage);
 			policy = other.policy;
 			policy->set(&storage, other.storage);
 			return *(this);
@@ -65,23 +91,32 @@ namespace aer
 			{
 				return *(reinterpret_cast<T*>(storage));
 			} 
-			throw std::exception();
+			else 
+			{
+				throw std::logic_error("Bad cast to" + impl::demangledTypeName<T>() + 
+						" but the type is " + policy->valueTypename());
+			}
 		}
 		template <typename T>
-		inline bool sameType() const
+		bool sameType() const
 		{
-			return (policy == selectPolicy<T>());
+			return (policy == selectPolicy<T>()) || sameTypeFallback<T>();
 		}
-		inline bool empty() const
+		template <typename T>
+		bool sameTypeFallback() const
 		{
-			return (policy == selectPolicy<Empty>());
+			return policy->sameTypeInfo(typeid(T));
+		}
+		bool empty() const
+		{
+			return sameType<Empty>();
 		}
 	private:
 		template <typename T>
 		static impl::BaseAnyPolicy* selectPolicy()
 		{
-			typedef impl::PointerValueAnyPolicy<T> SelectedPolicy;
-			static SelectedPolicy policy;
+			typedef impl::PointerValueAnyPolicy<T> Policy;
+			static Policy policy;
 			return &policy;
 		}
 	private:
@@ -92,6 +127,22 @@ namespace aer
 	struct Any::Empty
 	{
 	};
+
+	namespace 
+	{
+		template <typename T>
+		inline Any erase_type(T v)
+		{
+			return Any(v);
+		}
+
+		template <typename T>
+		inline T recall_type(Any any)
+		{
+			return any.as<T>();
+		}
+	}
+
 }
 
 #endif

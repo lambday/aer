@@ -10,20 +10,36 @@ namespace aer
 	{
 	public:
 		typedef T type;
+
+		Tag(const std::string& name) : 
+			name_(name), id_()
+		{
+		}
+
+		Tag(const Tag& other) : 
+			name_(other.name_), id_(other.id_)
+		{
+		}
+
+		Tag& operator=(const Tag& other)
+		{
+			name_ = other.name_;
+			id_ = other.id_;
+		}
 		
 		inline int id() const
 		{
-			return m_id;
+			return id_;
 		}
 
 		inline std::string name() const
 		{
-			return m_name;
+			return name_;
 		}
 
 	private:
-		std::string m_name;
-		int m_id;
+		std::string name_;
+		int id_;
 	};
 }
 

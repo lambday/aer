@@ -8,7 +8,7 @@ namespace aer
 	/** @brief
 	 *
 	 */
-	struct Object::Private
+	struct Object::Self
 	{
 		void set(int tag_id, const Any& any)
 		{
@@ -21,7 +21,11 @@ namespace aer
 		std::unordered_map<int, Any> map;
 	};
 
-	Object::Object() : m_context(new Context()), m_implementation()
+	Object::Object() : self()
+	{
+	}
+
+	Object::Object(const Object& other) : self()
 	{
 	}
 
@@ -31,13 +35,13 @@ namespace aer
 
 	void Object::set(int tag_id, const Any& any)
 	{
-		m_implementation->set(tag_id, any);
+		self->set(tag_id, any);
 		fire_updated(tag_id);
 	}
 
 	Any Object::get(int tag_id) const
 	{
-		return m_implementation->get(tag_id);
+		return self->get(tag_id);
 	}
 
 }

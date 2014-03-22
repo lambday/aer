@@ -15,14 +15,18 @@ namespace aer
 	class Library
 	{
 		public:
+			static const char* manifest_accessor_name;
+		public:
 			Library(const std::string& filename);
+			Library(const Library& other);
+			Library& operator=(const Library& other);
 			~Library();
-			As<Manifest> manifest();
+			Manifest manifest();
 		private:
-			std::shared_ptr<LibraryHandle> m_handle;
+			As<LibraryHandle> m_handle;
 	};
 
-	As<Library> loadLibrary(const std::string& filename);
+	Library loadLibrary(const std::string& filename);
 
 }
 

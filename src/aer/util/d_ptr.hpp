@@ -15,6 +15,7 @@ namespace aer
 			std::unique_ptr<T>(new T)
 		{
 		}
+		// TODO avoid allocation for stateless 'private's
 		DPtr(const DPtr<Pointer>& other) : 
 			std::unique_ptr<T>(std::move(other))
 		{

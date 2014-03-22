@@ -25,11 +25,13 @@ namespace aer
 			}
 		}
 		template <typename T>
-		std::function<T()> factoryMethod(const std::string& name)
+		T call(const std::string& name)
 		{
 			T (*fm)();
 			*(void**)(&fm) = dlsym(handle, name.c_str());
-			return std::function<T()>(fm);
+			if (!fm) 
+				throw std::logic_error("Haven't found method " + name);
+			return fm();
 		}
 	private:
 		void* handle;
@@ -44,14 +46,16 @@ namespace aer
 	{
 	}
 
-	As<Manifest> Library::manifest()
+	Manifest Library::manifest()
 	{
-		return m_handle->factoryMethod<As<Manifest>>("aerManifest")();
+		return m_handle->call<Manifest>(manifest_accessor_name);
 	}
 
-	As<Library> loadLibrary(const std::string& filename)
+	Library loadLibrary(const std::string& filename)
 	{
-		return As<Library>(new Library(filename));
+		return Library(filename);
 	}
+
+	const char* Library::manifest_accessor_name = "aerManifest";
 
 }

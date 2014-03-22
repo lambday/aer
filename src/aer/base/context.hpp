@@ -10,7 +10,7 @@
 
 namespace aer
 {
-	class Context : public EnableSelf<Context>
+	class Context
 	{
 	public:
 		Context();
@@ -25,8 +25,8 @@ namespace aer
 		Any anytag(const std::string& name) const;
 
 	private:
-		struct Private;
-		DPtr<Private> m_implementation;
+		struct Self;
+		DPtr<Self> self;
 	};
 }
 

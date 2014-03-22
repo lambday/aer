@@ -7,7 +7,7 @@ namespace aer
 	/** @brief
 	 *
 	 */
-	struct Context::Private
+	struct Context::Self
 	{
 		std::unordered_map<std::string, Any> m_tags;
 	};

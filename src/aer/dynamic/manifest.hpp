@@ -4,27 +4,35 @@
 #include <aer/dynamic/metaclass.hpp>
 
 #include <aer/util/d_ptr.hpp>
+#include <aer/util/as.hpp>
+
+#include <iostream>
+#include <vector>
 
 namespace aer
 {
 
 	class Library;
 
-	class Manifest : public EnableSelf<Manifest>
+	class Manifest
 	{
 		public:
-			Manifest();
+			Manifest(const std::string& description, const std::initializer_list<std::pair<std::string,Any>> metaclasses);
 			Manifest(const Manifest& other);
 			~Manifest();
 			template <typename T>
-			As<Metaclass<T>> metaclass(const std::string& name)
+			Metaclass<T> metaclass(const std::string& name)
 			{
-				Metaclass<T>* metaclass = nullptr;
-				return As<Metaclass<T>>(metaclass);
+				Any metaclass = findMetaclass(name);
+				return recall_type<Metaclass<T>>(metaclass);
 			}
+			std::string description() const;
+		protected:
+			void addMetaclass(const std::string& name, Any metaclass);
+			Any findMetaclass(const std::string& name);
 		private:
-			struct Private;
-			DPtr<Private> m_implementation;
+			struct Self;
+			DPtr<Self> self;
 	};
 
 }

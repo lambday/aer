@@ -16,21 +16,24 @@ namespace aer
 	class Metaclass
 	{
 		public:
-			Metaclass(As<Manifest> manifest) : m_manifest(manifest)
+			Metaclass(Any spawner) : spawner_(spawner)
 			{
 			}
-			Metaclass(const Metaclass<T>& other) : m_manifest(other.m_manifest)
+			Metaclass(const Metaclass<T>& other)
 			{
+				spawner_ = other.spawner_;
 			}
 			~Metaclass()
 			{
 			}
 			As<T> instance() const
 			{
-				return As<T>(new T());
+				return recall_type<std::function<As<T>()>>(spawner_)();
 			}
 		private:
-			As<Manifest> m_manifest;
+			Any spawner_;
+			//class Self;
+			//DPtr<Self> self;
 	};
 
 }
