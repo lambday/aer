@@ -12,7 +12,7 @@ namespace aer
 	namespace impl
 	{
 		template <typename T>
-		std::string demangledTypeName()
+		std::string demangledType()
 		{
 			size_t length;
 			int status;
@@ -27,8 +27,8 @@ namespace aer
 			public:
 				virtual void set(void** storage, const void* v) const = 0;
 				virtual void clear(void** storage) const = 0;
-				virtual std::string valueTypename() const = 0;
-				virtual bool sameTypeInfo(const std::type_info& ) const = 0;
+				virtual std::string type() const = 0;
+				virtual bool matches(const std::type_info& ti) const = 0;
 		};
 		
 		template <typename T>
@@ -43,11 +43,11 @@ namespace aer
 				{
 					delete reinterpret_cast<T*>(*storage);
 				}
-				virtual std::string valueTypename() const
+				virtual std::string type() const
 				{
-					return impl::demangledTypeName<T>();
+					return impl::demangledType<T>();
 				}
-				virtual bool sameTypeInfo(const std::type_info& ti) const
+				virtual bool matches(const std::type_info& ti) const
 				{
 					return typeid(T) == ti;
 				}
@@ -61,7 +61,6 @@ namespace aer
 
 		Any() : policy(selectPolicy<Empty>()), storage(nullptr)
 		{
-			//std::cout << "Creating empty";
 		}
 		template <typename T>
 		explicit Any(const T& v) : policy(selectPolicy<T>()), storage(nullptr)
@@ -74,7 +73,6 @@ namespace aer
 		}
 		Any& operator=(const Any& other)
 		{
-			//assert(policy == other.policy); 
 			policy->clear(&storage);
 			policy = other.policy;
 			policy->set(&storage, other.storage);
@@ -93,19 +91,19 @@ namespace aer
 			} 
 			else 
 			{
-				throw std::logic_error("Bad cast to" + impl::demangledTypeName<T>() + 
-						" but the type is " + policy->valueTypename());
+				throw std::logic_error("Bad cast to" + impl::demangledType<T>() + 
+						" but the type is " + policy->type());
 			}
 		}
 		template <typename T>
-		bool sameType() const
+		inline bool sameType() const
 		{
 			return (policy == selectPolicy<T>()) || sameTypeFallback<T>();
 		}
 		template <typename T>
 		bool sameTypeFallback() const
 		{
-			return policy->sameTypeInfo(typeid(T));
+			return policy->matches(typeid(T));
 		}
 		bool empty() const
 		{
@@ -131,13 +129,13 @@ namespace aer
 	namespace 
 	{
 		template <typename T>
-		inline Any erase_type(T v)
+		inline Any erase_type(const T& v)
 		{
 			return Any(v);
 		}
 
 		template <typename T>
-		inline T recall_type(Any any)
+		inline T recall_type(const Any& any)
 		{
 			return any.as<T>();
 		}

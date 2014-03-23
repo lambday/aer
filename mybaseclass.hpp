@@ -6,7 +6,7 @@
 class MyBaseClass : public aer::Object
 {
 	public:
-		int myMethod()
+		virtual int myMethod()
 		{
 			return 0;
 		}

@@ -1,25 +1,21 @@
 #include <aer/aer.hpp>
 #include <iostream>
 
-class MyBaseClass : public aer::Object
-{
-	public:
-		int myMethod()
-		{
-			return 0;
-		}
-};
+#include <mybaseclass.hpp>
 
-static aer::Tag<int> int_parameter;
+static aer::Tag<int> int_parameter = aer::Tag<int>("f");
 
 int main()
 {
 	auto library = aer::loadLibrary("./plugin.so");
-	auto manifest = library->manifest();
-	auto metaclass = manifest->metaclass<MyBaseClass>("basic"); 
-	aer::As<MyBaseClass> object = metaclass->instance();
+	auto manifest = library.manifest();
+	auto metaclass = manifest.metaclass<MyBaseClass>("basic"); 
+	auto object = metaclass.instance();
 
 	object->set(int_parameter, 4040);
 	object->myMethod();
-	std::cout << "Value is " << object->get(int_parameter);
+	std::cout << "Value is " << object->get(int_parameter) << "\n";
+	object->set(int_parameter, 4020);
+	object->myMethod();
+	std::cout << "Value is " << object->get(int_parameter) << "\n";
 }

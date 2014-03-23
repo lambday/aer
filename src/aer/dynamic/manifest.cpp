@@ -42,7 +42,7 @@ namespace aer
 		self->metaclasses[name] = metaclass;
 	}
 
-	Any Manifest::findMetaclass(const std::string& name)
+	Any Manifest::findMetaclass(const std::string& name) const
 	{
 		if (!self->metaclasses.count(name))
 			throw std::logic_error("Haven't found metaclass named " + name);

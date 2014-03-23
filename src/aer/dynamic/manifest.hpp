@@ -21,7 +21,7 @@ namespace aer
 			Manifest(const Manifest& other);
 			~Manifest();
 			template <typename T>
-			Metaclass<T> metaclass(const std::string& name)
+			Metaclass<T> metaclass(const std::string& name) const
 			{
 				Any metaclass = findMetaclass(name);
 				return recall_type<Metaclass<T>>(metaclass);
@@ -29,11 +29,31 @@ namespace aer
 			std::string description() const;
 		protected:
 			void addMetaclass(const std::string& name, Any metaclass);
-			Any findMetaclass(const std::string& name);
+			Any findMetaclass(const std::string& name) const;
 		private:
 			struct Self;
 			DPtr<Self> self;
 	};
+
+#define AER_BEGIN_MANIFEST(DESCRIPTION)								\
+extern "C" aer::Manifest aerManifest()								\
+{																	\
+	static aer::Manifest manifest(DESCRIPTION,{						\
+
+#define AER_EXPORT(CLASSNAME, BASE_CLASSNAME, IDENTIFIER)			\
+	std::make_pair(IDENTIFIER, aer::erase_type(						\
+		aer::Metaclass<BASE_CLASSNAME>(aer::erase_type(				\
+			std::function<aer::As<BASE_CLASSNAME>()>(				\
+				[]() -> aer::As<BASE_CLASSNAME>						\
+				{													\
+					return aer::As<BASE_CLASSNAME>(new CLASSNAME);	\
+				}													\
+				))))),												\
+
+#define AER_END_MANIFEST()											\
+		});															\
+	return manifest;												\
+}
 
 }
 

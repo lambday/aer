@@ -24,23 +24,6 @@ namespace aer
 		}
 	};
 
-	/*
-	template <typename T>
-	struct EnableSelf : public std::enable_shared_from_this<T>
-	{
-		inline As<T> self()
-		{
-			return As<T>(std::enable_shared_from_this<T>::shared_from_this());
-		}
-	};
-
-	template <typename T, class... Args>
-	As<T> create(Args&&... args)
-	{
-		return As<T>(std::make_shared<T, Args...>(std::forward<Args>(args)...));
-	}
-	*/
-
 }
 
 #endif

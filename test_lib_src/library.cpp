@@ -7,18 +7,23 @@
 
 class MyConcreteClass : public MyBaseClass
 {
-
+	int myMethod() override
+	{
+		std::cout << "My method of MyConcreteClass called\n";
+		return 0;
+	}
 };
 
-extern "C" aer::Manifest aerManifest()
+class MyOtherConcreteClass : public MyBaseClass
 {
-	std::cout << "Creating manifest for you\n";
-	static aer::Metaclass<MyBaseClass> metaclazz(aer::erase_type(std::function<aer::As<MyBaseClass>()>(
-				[]() -> aer::As<MyBaseClass>
-				{
-					return aer::As<MyBaseClass>(new MyConcreteClass()); 
-				})));
-	static aer::Manifest manifest("Stupid library with stupid classes", {std::make_pair("basic", aer::erase_type(metaclazz))});
+	int myMethod() override
+	{
+		std::cout << "My method of MyOtherConcreteClass called\n";
+		return 0;
+	}
+};
 
-	return manifest;
-}
+AER_BEGIN_MANIFEST("Simple library")
+AER_EXPORT(MyConcreteClass, MyBaseClass, "basic")
+AER_EXPORT(MyOtherConcreteClass, MyBaseClass, "other_basic")
+AER_END_MANIFEST()
