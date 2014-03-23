@@ -9,23 +9,23 @@ namespace aer
 	{
 		public:
 			std::string description;
-			std::unordered_map<std::string, Any> metaclasses;
+			std::unordered_map<std::string, Any> classes;
 	};
 
 	Manifest::Manifest(const std::string& description, 
-			const std::initializer_list<std::pair<std::string,Any>> metaclasses) :
+			const std::initializer_list<std::pair<std::string,Any>> classes) :
 		self()
 	{
 		self->description = description;
-		for (const auto& m : metaclasses) 
-			addMetaclass(m.first, m.second);
+		for (const auto& m : classes) 
+			addClass(m.first, m.second);
 	}
 
 	Manifest::Manifest(const Manifest& other) : 
 		self()
 	{
 		self->description = other.self->description;
-		self->metaclasses = other.self->metaclasses;
+		self->classes = other.self->classes;
 	}
 
 	Manifest::~Manifest()
@@ -37,16 +37,16 @@ namespace aer
 		return self->description;
 	}
 
-	void Manifest::addMetaclass(const std::string& name, Any metaclass)
+	void Manifest::addClass(const std::string& name, Any clazz)
 	{
-		self->metaclasses[name] = metaclass;
+		self->classes[name] = clazz;
 	}
 
-	Any Manifest::findMetaclass(const std::string& name) const
+	Any Manifest::findClass(const std::string& name) const
 	{
-		if (!self->metaclasses.count(name))
+		if (!self->classes.count(name))
 			throw std::logic_error("Haven't found metaclass named " + name);
-		return self->metaclasses.at(name);
+		return self->classes.at(name);
 	}
 
 }

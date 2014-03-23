@@ -9,7 +9,7 @@ int main()
 {
 	auto library = aer::loadLibrary("./plugin.so");
 	auto manifest = library.manifest();
-	auto metaclass = manifest.metaclass<MyBaseClass>("basic"); 
+	auto metaclass = manifest.classByName<MyBaseClass>("basic"); 
 	auto object = metaclass.instance();
 
 	object->set(int_parameter, 4040);
