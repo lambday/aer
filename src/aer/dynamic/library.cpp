@@ -7,7 +7,7 @@ namespace aer
 	public:
 		LibraryHandle(const std::string& filename)
 		{
-			handle = dlopen(filename.c_str(), RTLD_LAZY);
+			handle = dlopen(filename.c_str(), RTLD_NOW | RTLD_LOCAL);
 			if (handle) 
 			{
 				std::cout << "Loaded\n";
@@ -21,6 +21,7 @@ namespace aer
 		{
 			if (handle)
 			{
+				std::cout << "Closing library\n";
 				dlclose(handle);
 			}
 		}
